@@ -39,6 +39,10 @@ jobs:
               --output-dir pypi                                               \
               --title wheelyard                                               \
               --no-generate-timestamp
+          sed -i '
+              s|^\([ ]*\)\(h1 {\)$|\1\2\n\1    color: white;\n\1    font-family: courier;|g
+              s|background-color: #e6f8ff;|background-color: black;|g
+              ' pypi/index.html
       -
         name: Sync static site
         run: |
