@@ -1,0 +1,47 @@
+name: update
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+      -
+        name: Install dumb-pypi
+        run: |
+          python -m pip install dumb-pypi
+      -
+        name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.REMOTE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      -
+        name: Build static site
+        run: |
+          mkdir build && cd build
+          ssh -q ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}        \
+              '/bin/ls ${{ secrets.REMOTE_ROOT }}/pypi/pool' > packages.txt
+          dumb-pypi                                                           \
+              --package-list packages.txt                                     \
+              --packages-url https://pylegacy.org/pypi/pool/                  \
+              --output-dir pypi                                               \
+              --title wheelyard                                               \
+              --no-generate-timestamp
+      -
+        name: Sync static site
+        run: |
+          rsync -avP                                                          \
+              build/pypi/                                                     \
+              ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_ROOT }}/pypi/
