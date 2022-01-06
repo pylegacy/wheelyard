@@ -26,8 +26,9 @@ jobs:
             "2.6",
             "3.2",
             "3.3",
+            "3.4",
           ]
-      max-parallel: 3
+      max-parallel: 4
       fail-fast: false
     runs-on: ubuntu-latest
     container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-5"
@@ -63,8 +64,9 @@ jobs:
             "2.6",
             "3.2",
             "3.3",
+            "3.4",
           ]
-      max-parallel: 3
+      max-parallel: 4
       fail-fast: false
     needs: build
     runs-on: ubuntu-latest
@@ -119,8 +121,9 @@ jobs:
             "2.6",
             "3.2",
             "3.3",
+            "3.4",
           ]
-      max-parallel: 3
+      max-parallel: 4
       fail-fast: false
     needs: repair
     runs-on: ubuntu-latest
