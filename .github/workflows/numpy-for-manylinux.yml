@@ -95,7 +95,10 @@ jobs:
       -
         name: Repair wheel
         run: |
-          python -m auditwheel repair -w wheelyard dist/*.whl
+          if [ "${{ matrix.python-version }}" = "3.2" ]; then
+              kwds="--no-update-tags"
+          fi
+          python -m auditwheel repair -w wheelyard ${kwds} dist/*.whl
       -
         name: Upload repair artifacts
         uses: actions/upload-artifact@v1
@@ -134,8 +137,9 @@ jobs:
         run: |
           if [ "${{ matrix.python-version }}" = "3.2" ]; then
               # Patch due to pip 7.x bug when identifying container platform.
-              whlpath="$(find wheelyard -type f)"
-              mv ${whlpath} $(echo ${whlpath} | sed "s|linux_i686|linux_x86_64|g")
+              whlpath1="$(find wheelyard -type f)"
+              whlpath2="$(echo ${whlpath1} | sed 's|linux_i686|linux_x86_64|g')"
+              mv ${whlpath1} ${whlpath2} 2>/dev/null || true
           fi
           pip install wheelyard/*.whl
       -
