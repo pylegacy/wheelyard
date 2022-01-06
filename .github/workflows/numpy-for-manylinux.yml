@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - ".github/workflows/numpy-for-manylinux.yml"
-      - "recipes/numpy"
+      - "recipes/numpy/**"
   pull_request:
     paths:
       - ".github/workflows/numpy-for-manylinux.yml"
-      - "recipes/numpy"
+      - "recipes/numpy/**"
   workflow_dispatch:
 
 jobs:
