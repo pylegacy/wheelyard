@@ -60,9 +60,17 @@ pip ${download} --no-deps --no-binary=:all: "${pkgname} < ${maxversion}"
 
 unzip -q $(ls)
 cd $(ls | head -n1)
+
+# Apply patches.
 for patchfile in $(find "${here}/patches" -type f); do
     patch -p1 < ${patchfile}
 done
+# Copy licenses of bundled libraries.
+mv LICENSE.txt LICENSE
+for licensefile in $(find "${here}/licenses" -type f); do
+    cp ${licensefile} ./
+done
+
 python setup.py bdist_wheel --dist-dir=${cwd}/dist
 
 rm -rf ${tmpdir}
