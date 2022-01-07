@@ -26,7 +26,6 @@ esac
 
 # Needed this upgrade because otherwise `wheel` sets wrong tags for containers.
 case ${pyversion} in
-    3.3)  pip install "wheel < 0.31" --upgrade;;
     2.6)  sed -i '
         103 d
         104 a \    result = distutils.util.get_platform().replace(".", "_").replace("-", "_")
