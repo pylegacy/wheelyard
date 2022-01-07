@@ -166,7 +166,6 @@ jobs:
             "3.4",
           ]
       max-parallel: 1
-      fail-fast: false
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -188,3 +187,14 @@ jobs:
           rsync -avP                                                          \
               wheelyard/                                                      \
               ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_ROOT }}/pypi/pool/
+
+  update:
+    needs: upload
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Trigger wheelyard update
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          event-type: update-wheelyard

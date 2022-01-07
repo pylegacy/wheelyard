@@ -1,6 +1,14 @@
 name: update
 
 on:
+  push:
+    paths:
+      - ".github/workflows/update.yml"
+  pull_request:
+    paths:
+      - ".github/workflows/update.yml"
+  repository_dispatch:
+      types: [update-wheelyard]
   workflow_dispatch:
 
 jobs:
