@@ -149,3 +149,42 @@ jobs:
         name: Test package
         run: |
           python -c "import numpy as np"
+
+  upload:
+    strategy:
+      matrix:
+        arch:
+          [
+            "x64",
+            "x86",
+          ]
+        python-version:
+          [
+            "2.6",
+            "3.2",
+            "3.3",
+            "3.4",
+          ]
+      max-parallel: 1
+      fail-fast: false
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Download repair artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts-repair-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: wheelyard
+      -
+        name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.REMOTE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      -
+        name: Sync packages
+        run: |
+          rsync -avP                                                          \
+              wheelyard/                                                      \
+              ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_ROOT }}/pypi/pool/
