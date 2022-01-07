@@ -62,14 +62,18 @@ unzip -q $(ls)
 cd $(ls | head -n1)
 
 # Apply patches.
-for patchfile in $(find "${here}/patches" -type f); do
-    patch -p1 < ${patchfile}
-done
+if [ -d "${here}/patches" ]; then
+    for patchfile in $(find "${here}/patches" -type f); do
+        patch -p1 < ${patchfile}
+    done
+fi
 # Copy licenses of bundled libraries.
 mv LICENSE.txt LICENSE
-for licensefile in $(find "${here}/licenses" -type f); do
-    cp ${licensefile} ./
-done
+if [ -d "${here}/licenses" ]; then
+    for licensefile in $(find "${here}/licenses" -type f); do
+        cp ${licensefile} ./
+    done
+fi
 
 python setup.py bdist_wheel --dist-dir=${cwd}/dist
 
