@@ -130,18 +130,9 @@ jobs:
     strategy:
       matrix:
         arch:
-          [
-            "x64",
-            "x86",
-          ]
+          ["x64", "x86"]
         python-version:
-          [
-            "2.6",
-            "2.7",
-            "3.2",
-            "3.3",
-            "3.4",
-          ]
+          ["2.6", "2.7", "3.2", "3.3", "3.4"]
       max-parallel: 1
     needs: test
     runs-on: ubuntu-latest
