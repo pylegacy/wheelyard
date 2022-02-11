@@ -29,6 +29,11 @@ jobs:
         name: Checkout
         uses: actions/checkout@v1
       -
+        name: Fixup pip and wheel
+        run: |
+          sh recipes/fix-pip.sh
+          sh recipes/fix-wheel.sh
+      -
         name: Run pre-build script
         run: |
           sh recipes/numpy/prebuild.sh
@@ -106,20 +111,22 @@ jobs:
     container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-5"
     steps:
       -
+        name: Checkout
+        uses: actions/checkout@v1
+      -
         name: Download repair artifacts
         uses: actions/download-artifact@v1
         with:
           name: artifacts-repair-${{ matrix.arch }}-${{ matrix.python-version }}
           path: wheelyard
       -
+        name: Fixup pip and wheel
+        run: |
+          sh recipes/fix-pip.sh
+          sh recipes/fix-wheel.sh
+      -
         name: Install package
         run: |
-          if [ "${{ matrix.python-version }}" = "3.2" ]; then
-              # Patch due to pip 7.x bug when identifying container platform.
-              whlpath1="$(find wheelyard -type f)"
-              whlpath2="$(echo ${whlpath1} | sed 's|linux_i686|linux_x86_64|g')"
-              mv ${whlpath1} ${whlpath2} 2>/dev/null || true
-          fi
           pip install wheelyard/*.whl
       -
         name: Test package
