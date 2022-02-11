@@ -1,8 +1,17 @@
---- setup.cfg.orig  2022-02-10 20:19:14.969000000 +0100
-+++ setup.cfg       2022-02-10 20:20:06.154091200 +0100
-@@ -8,7 +8,15 @@
+--- setup.cfg.orig  2022-02-11 12:39:12.092113700 +0100
++++ setup.cfg       2022-02-11 12:40:16.905071900 +0100
+@@ -7,8 +7,24 @@
+ provides = pyhdf
  doc_files = pyhdf/doc/
  
++[metadata]
++license_file = LICENSE
++license_files =
++    LICENSE
++    LICENSE.libhdf
++    LICENSE.libjpeg
++    LICENSE.zlib
++
  [options]
 -install_requires = numpy
 +install_requires =

@@ -1,0 +1,24 @@
+--- setup.py.orig  2022-02-11 11:40:14.759000000 +0100
++++ setup.py       2022-02-11 12:25:55.036900000 +0100
+@@ -145,6 +145,15 @@
+ else:
+     data_files = []
+ 
++kwargs = {}
++if sys.version_info[:2] == (3, 2):
++    kwargs.update({
++        'install_requires':
++            'numpy < 1.12',
++        'setup_requires':
++            'numpy < 1.12',
++    })
++
+ setup(name         = 'pyhdf',
+       maintainer       = 'pyhdf authors',
+       author       = 'Andre Gosselin et al.',
+@@ -160,4 +169,5 @@
+       provides     = ['pyhdf'],
+       classifiers  = [_f for _f in CLASSIFIERS.split('\n') if _f],
+       platforms    = ["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
++      **kwargs
+       )
