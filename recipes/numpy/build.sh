@@ -27,8 +27,14 @@ fi
 
 # Needed by Python 3.2 as long as it uses pip 7.x.
 case ${pyversion} in
+    2.6)  download="download" ;;
     3.2)  download="install --download ." ;;
-    *)    download="download" ;;
+    *)    download="download --no-build-isolation" ;;
+esac
+case ${pyversion} in
+    2.6)  wheel="wheel" ;;
+    3.2)  wheel="wheel" ;;
+    *)    wheel="wheel --no-build-isolation" ;;
 esac
 
 tmpdir=/tmp/$(mktemp -d tmp-${pkgname}-XXXXXX)
@@ -36,7 +42,7 @@ mkdir -p ${tmpdir}
 cd ${tmpdir}
 
 pip install "cython < ${maxcythonversion}"
-pip ${download} --no-deps --no-binary=:all: "${pkgname} < ${maxversion}"
+pip ${download} --no-deps --no-binary="${pkgname}" "${pkgname} < ${maxversion}"
 
 unzip -q $(ls)
 cd $(ls | head -n1)
@@ -44,7 +50,7 @@ cd $(ls | head -n1)
 # Apply patches.
 if [ -d "${here}/patches" ]; then
     for patchfile in $(find "${here}/patches" -type f); do
-        patch -p1 < ${patchfile}
+        patch < ${patchfile}
     done
 fi
 # Copy licenses of bundled libraries.
@@ -55,6 +61,6 @@ if [ -d "${here}/licenses" ]; then
     done
 fi
 
-python setup.py bdist_wheel --dist-dir=${cwd}/dist
+pip ${wheel} -w ${cwd}/dist --no-deps .
 
 rm -rf ${tmpdir}
