@@ -32,7 +32,15 @@ cd ${tmpdir}
 
 pip ${download} --no-deps --no-binary="${pkgname}" "${pkgname} < ${maxversion}"
 
-tar -xf $(ls)
+sdistpkg=$(ls)
+if [ ! -z $(echo "${sdistpkg}" | grep -e .zip$ || true) ]; then
+    unzip -q "${sdistpkg}"
+elif [ ! -z $(echo "${sdistpkg}" | grep -e .tar.gz$ || true) ]; then
+    tar -xf "${sdistpkg}"
+else
+    echo 1>&2 "E: unsupported sdist file: '${sdistpkg}'"
+    exit 1
+fi
 cd $(ls | head -n1)
 
 # Apply patches.

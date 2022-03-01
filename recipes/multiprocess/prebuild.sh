@@ -3,4 +3,4 @@
 apt-get update
 
 # Install build dependencies.
-apt-get install -y gcc libc6-dev
+apt-get install -y gcc libc6-dev unzip
