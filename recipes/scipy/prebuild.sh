@@ -8,4 +8,4 @@ pkglapack="$(apt-cache search liblapack3 | grep liblapack3 | cut -d' ' -f1)"
 apt-get install -y ${pkgblas} libblas-dev ${pkglapack} liblapack-dev
 
 # Install build dependencies.
-apt-get install -y gcc gfortran libc6-dev unzip
+apt-get install -y gcc g++ gfortran libc6-dev unzip

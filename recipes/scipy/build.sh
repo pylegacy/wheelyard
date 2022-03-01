@@ -36,6 +36,7 @@ mkdir -p ${tmpdir}
 cd ${tmpdir}
 
 pip install "cython < ${maxcythonversion}"
+pip install "numpy < ${maxnumpyversion}"
 pip ${download} --no-deps --no-binary="${pkgname}" "${pkgname} < ${maxversion}"
 
 sdistpkg=$(ls)
