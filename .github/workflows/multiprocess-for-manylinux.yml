@@ -95,7 +95,13 @@ jobs:
           if [ "${{ matrix.python-version }}" = "3.2" ]; then
               kwds="--no-update-tags"
           fi
-          python -m auditwheel repair -w wheelyard ${kwds} dist/*.whl
+          pkgfile="$(ls dist/*.whl | xargs basename)"
+          if [ ! -z $(echo "${pkgfile}" | cut -d- -f5 | grep linux) ]; then
+              python -m auditwheel repair -w wheelyard ${kwds} dist/*.whl
+          else
+              mkdir -p wheelyard
+              cp "dist/${pkgfile}" wheelyard/
+          fi
       -
         name: Upload repair artifacts
         uses: actions/upload-artifact@v1

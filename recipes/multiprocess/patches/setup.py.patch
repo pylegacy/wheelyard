@@ -1,0 +1,35 @@
+--- setup.py.orig  2022-03-01 15:17:21.415000000 +0100
++++ setup.py       2022-03-01 15:49:11.257713200 +0100
+@@ -436,6 +436,32 @@
+             return arg
+ 
+ 
++# For Python >= 3.5, ensure that the Python tag is correct.
++from wheel.bdist_wheel import bdist_wheel
++if sys.version_info[:2] < (3, 5):
++    multiprocess_bdist_wheel = bdist_wheel
++else:
++    class multiprocess_bdist_wheel(bdist_wheel):
++        def finalize_options(self):
++            bdist_wheel.finalize_options(self)
++            self.root_is_pure = False
++        def get_tag(self):
++            python = "py{0}{1}".format(*sys.version_info[:2])
++            abi = "none"
++            plat = "any"
++            return python, abi, plat
++extras["cmdclass"] = dict(bdist_wheel=multiprocess_bdist_wheel)
++
++
++# Overwrite limits for `dill` dependency based on Python version.
++if has_setuptools:
++    if sys.version_info[:2] < (3, 5):
++        install_requires = 'dill >= 0.2.8, < 0.2.9'
++    else:
++        install_requires = 'dill >= 0.2.8, < 0.3.5'
++    extras["install_requires"] = install_requires
++
++
+ def run_setup(with_extensions=True):
+     extensions = []
+     if with_extensions:
