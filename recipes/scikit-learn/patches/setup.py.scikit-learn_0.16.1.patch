@@ -1,0 +1,33 @@
+--- setup.py.orig  2022-03-02 20:48:49.612000000 +0100
++++ setup.py       2022-03-02 20:49:11.807466500 +0100
+@@ -166,6 +166,30 @@
+ 
+         metadata['configuration'] = configuration
+ 
++        if sys.version_info[:2] == (3, 2):
++            metadata['install_requires'] = [
++                'numpy >= 1.11, < 1.12',
++                'scipy >= 0.17, < 0.19',
++            ]
++        else:
++            metadata['install_requires'] = [
++                'numpy >= 1.11, < 1.12; python_version == "2.6"',
++                'numpy >= 1.16, < 1.17; python_version == "2.7"',
++                'numpy >= 1.11, < 1.12; python_version == "3.2"',
++                'numpy >= 1.11, < 1.12; python_version == "3.3"',
++                'numpy >= 1.15, < 1.17; python_version == "3.4"',
++                'numpy >= 1.16, < 1.19; python_version == "3.5"',
++                'numpy >= 1.16, < 1.20; python_version == "3.6"',
++                'numpy >= 1.21, < 1.23; python_version >= "3.7"',
++                'scipy >= 0.17, < 0.19; python_version == "2.6"',
++                'scipy >= 1.2, < 1.3; python_version == "2.7"',
++                'scipy >= 0.17, < 0.19; python_version == "3.2"',
++                'scipy >= 0.17, < 1.0; python_version == "3.3"',
++                'scipy >= 0.17, < 1.3; python_version == "3.4"',
++                'scipy >= 1.2, < 1.8; python_version >= "3.5"',
++            ]
++
++
+     setup(**metadata)
+ 
+ 
