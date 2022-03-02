@@ -1,0 +1,63 @@
+--- setup.py.orig  2022-03-02 13:18:31.743826100 +0100
++++ setup.py       2022-03-02 13:23:31.329202500 +0100
+@@ -26,18 +26,57 @@
+ 
+ NUMPY_DEP = 'numpy>=1.7'
+ 
++# Overwrite original `NUMPY_DEP` and define `CYTHON_DEP` and `PKGCONFIG_DEP`.
++if sys.version_info[:2] == (3, 2):
++    NUMPY_DEP = [
++        'numpy >= 1.11, < 1.12',
++    ]
++    CYTHON_DEP = [
++        'cython >= 0.26, < 0.27',
++    ]
++    PKGCONFIG_DEP = [
++        'pkgconfig < 1.5.3',
++    ]
++else:
++    NUMPY_DEP = [
++        'numpy >= 1.11, < 1.12; python_version == "2.6"',
++        'numpy >= 1.16, < 1.17; python_version == "2.7"',
++        'numpy >= 1.11, < 1.12; python_version == "3.2"',
++        'numpy >= 1.11, < 1.12; python_version == "3.3"',
++        'numpy >= 1.15, < 1.17; python_version == "3.4"',
++        'numpy >= 1.16, < 1.19; python_version == "3.5"',
++        'numpy >= 1.16, < 1.20; python_version == "3.6"',
++        'numpy >= 1.21, < 1.23; python_version >= "3.7"',
++    ]
++    CYTHON_DEP = [
++        'cython >= 0.29, < 3.0; python_version == "2.6"',
++        'cython >= 0.29, < 3.0; python_version == "2.7"',
++        'cython >= 0.26, < 0.27; python_version == "3.2"',
++        'cython >= 0.29, < 3.0; python_version == "3.3"',
++        'cython >= 0.29, < 3.0; python_version == "3.4"',
++        'cython >= 0.29, < 3.1; python_version >= "3.5"',
++    ]
++    PKGCONFIG_DEP = [
++        'pkgconfig >= 1.4.0, < 1.5.0; python_version == "2.6"',
++        'pkgconfig >= 1.5.1, < 1.5.3; python_version == "3.2"',
++        'pkgconfig >= 1.5.1, < 1.5.3; python_version == "2.7"',
++        'pkgconfig >= 1.5.1, < 1.5.3; python_version == "3.3"',
++        'pkgconfig >= 1.5.1, < 1.5.3; python_version == "3.4"',
++        'pkgconfig >= 1.5.1, < 1.6.0; python_version >= "3.5"',
++    ]
++
+ # these are required to use h5py
+-RUN_REQUIRES = [NUMPY_DEP, 'six']
++RUN_REQUIRES = NUMPY_DEP + ["six < 1.16"]
+ 
+ # these are required to build h5py
+ # RUN_REQUIRES is included as setup.py test needs RUN_REQUIRES for testing
+ # RUN_REQUIRES can be removed when setup.py test is removed
+-SETUP_REQUIRES = RUN_REQUIRES + [NUMPY_DEP, 'Cython>=0.23', 'pkgconfig']
++SETUP_REQUIRES = RUN_REQUIRES + CYTHON_DEP + PKGCONFIG_DEP
+ 
+ # Needed to avoid trying to install numpy/cython on pythons which the latest
+ # versions don't support
+ use_setup_requires = any(parameter in sys.argv for parameter in
+-    ("bdist_wheel", "build", "configure", "install", "test"))
++    ("build", "configure", "install", "test"))
+ 
+ 
+ # --- Custom Distutils commands -----------------------------------------------
