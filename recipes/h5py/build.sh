@@ -5,13 +5,14 @@ cwd=$(pwd)
 pkgname=h5py
 pyversion="$(python -V 2>&1 | head -n1 | cut -d' ' -f2 | cut -d'.' -f1,2)"
 case ${pyversion} in
-    2.6|3.3)             maxversion=2.9;  maxnumpyversion=1.12 ;;
-    3.2)                 maxversion=2.7;  maxnumpyversion=1.12 ;;
-    2.7|3.4)             maxversion=3.0;  maxnumpyversion=1.17 ;;
-    3.5)                 maxversion=3.0;  maxnumpyversion=1.19 ;;
-    3.6)                 maxversion=3.2;  maxnumpyversion=1.20 ;;
-    3.7|3.8|3.9)         maxversion=3.7;  maxnumpyversion=1.22 ;;
-    3.10)                maxversion=3.7;  maxnumpyversion=1.22 ;;
+    2.6)          maxversion=2.9; maxnumpyversion=1.12; maxcythonversion=3.0;  maxpkgconfig=1.5.0 ;;
+    3.2)          maxversion=2.7; maxnumpyversion=1.12; maxcythonversion=0.27  maxpkgconfig=1.5.3 ;;
+    3.3)          maxversion=2.9; maxnumpyversion=1.12; maxcythonversion=3.0;  maxpkgconfig=1.5.3 ;;
+    2.7|3.4)      maxversion=3.0; maxnumpyversion=1.17; maxcythonversion=3.0;  maxpkgconfig=1.5.3 ;;
+    3.5)          maxversion=3.0; maxnumpyversion=1.19; maxcythonversion=3.1;  maxpkgconfig=1.6.0 ;;
+    3.6)          maxversion=3.2; maxnumpyversion=1.20; maxcythonversion=3.1;  maxpkgconfig=1.6.0 ;;
+    3.7|3.8|3.9)  maxversion=3.7; maxnumpyversion=1.22; maxcythonversion=3.1;  maxpkgconfig=1.6.0 ;;
+    3.10)         maxversion=3.7; maxnumpyversion=1.22; maxcythonversion=3.1;  maxpkgconfig=1.6.0 ;;
     *)
         echo 1>&2 "E: unsupported Python version: '${pyversion}'"
         exit 1
@@ -34,7 +35,10 @@ tmpdir=/tmp/$(mktemp -d tmp-${pkgname}-XXXXXX)
 mkdir -p ${tmpdir}
 cd ${tmpdir}
 
+pip install "six < 1.16"
 pip install "numpy < ${maxnumpyversion}"
+pip install "cython < ${maxcythonversion}"
+pip install "pkgconfig < ${maxpkgconfig}"
 pip ${download} --no-deps --no-binary="${pkgname}" "${pkgname} < ${maxversion}"
 
 tar -xf $(ls)

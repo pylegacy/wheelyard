@@ -1,0 +1,183 @@
+name: h5py-for-manylinux
+
+env:
+  PKGNAME: "h5py"
+  PIP_PREFER_BINARY: "1"
+
+on:
+  push:
+    paths:
+      - ".github/workflows/h5py-for-manylinux.yml"
+      - "recipes/h5py/**"
+  pull_request:
+    paths:
+      - ".github/workflows/h5py-for-manylinux.yml"
+      - "recipes/h5py/**"
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    strategy:
+      matrix:
+        arch:
+          ["x64", "x86"]
+        python-version:
+          ["2.6", "2.7", "3.2", "3.3", "3.4"]
+      max-parallel: 5
+      fail-fast: false
+    runs-on: ubuntu-latest
+    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-6"
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v1
+      -
+        name: Fixup pip and wheel
+        run: |
+          sh recipes/fix-pip.sh
+          sh recipes/fix-wheel.sh
+      -
+        name: Run pre-build script
+        run: |
+          sh recipes/${{ env.PKGNAME }}/prebuild.sh
+      -
+        name: Run build script
+        run: |
+          sh recipes/${{ env.PKGNAME }}/build.sh
+      -
+        name: Upload build artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifacts-build-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: dist
+
+  repair:
+    strategy:
+      matrix:
+        arch:
+          ["x64", "x86"]
+        python-version:
+          ["2.6", "2.7", "3.2", "3.3", "3.4"]
+      max-parallel: 5
+      fail-fast: false
+    needs: build
+    runs-on: ubuntu-latest
+    container: "pylegacy/${{ matrix.arch }}-python:3.6-debian-6"
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v1
+      -
+        name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts-build-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: dist
+      -
+        name: Run pre-build script
+        run: |
+          sh recipes/${{ env.PKGNAME }}/prebuild.sh
+      -
+        name: Install patchelf
+        run: |
+          pip install patchelf
+          alias patchelf="python -m patchelf"
+      -
+        name: Install auditwheel
+        run: |
+          pip install "auditwheel < 4.0"
+      -
+        name: Repair wheel
+        run: |
+          case "${{ matrix.arch }}" in
+              x86) kwds="--plat manylinux2010_i686"   ;;
+              x64) kwds="--plat manylinux2010_x86_64" ;;
+          esac
+          case "${{ matrix.python-version }}" in
+              2.6|3.2|3.3)  kwds="${kwds} --no-update-tags" ;;
+          esac
+          python -m auditwheel repair -w wheelyard ${kwds} dist/*.whl
+      -
+        name: Upload repair artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifacts-repair-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: wheelyard
+
+  test:
+    strategy:
+      matrix:
+        arch:
+          ["x64", "x86"]
+        python-version:
+          ["2.6", "2.7", "3.2", "3.3", "3.4"]
+      max-parallel: 5
+      fail-fast: false
+    needs: repair
+    runs-on: ubuntu-latest
+    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-8"
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v1
+      -
+        name: Download repair artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts-repair-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: wheelyard
+      -
+        name: Fixup pip and wheel
+        run: |
+          sh recipes/fix-pip.sh
+          sh recipes/fix-wheel.sh
+      -
+        name: Install package
+        run: |
+          pip install wheelyard/*.whl
+      -
+        name: Test package
+        run: |
+          python -c "from h5py import File"
+
+  upload:
+    strategy:
+      matrix:
+        arch:
+          ["x64", "x86"]
+        python-version:
+          ["2.6", "2.7", "3.2", "3.3", "3.4"]
+      max-parallel: 1
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Download repair artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: artifacts-repair-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: wheelyard
+      -
+        name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.REMOTE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      -
+        name: Sync packages
+        run: |
+          rsync -avP                                                          \
+              wheelyard/                                                      \
+              ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_ROOT }}/pypi/pool/
+
+  update:
+    needs: upload
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Trigger wheelyard update
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          event-type: update-wheelyard
