@@ -1,0 +1,17 @@
+--- numpy/core/setup.py.orig  2022-03-03 19:19:59.272000000 +0100
++++ numpy/core/setup.py       2022-03-03 19:20:11.344305700 +0100
+@@ -659,14 +659,6 @@
+         # compiler does not work).
+         for lang, test_code, note in (
+             ('c', 'int main(void) { return 0;}', ''),
+-            ('c++', (
+-                    'int main(void)'
+-                    '{ auto x = 0.0; return static_cast<int>(x); }'
+-                ), (
+-                    'note: A compiler with support for C++11 language '
+-                    'features is required.'
+-                )
+-             ),
+         ):
+             is_cpp = lang == 'c++'
+             if is_cpp:
