@@ -5,7 +5,7 @@ cwd=$(pwd)
 pkgname=scipy
 pyversion="$(python -V 2>&1 | head -n1 | cut -d' ' -f2 | cut -d'.' -f1,2)"
 case ${pyversion} in
-    2.6)           maxversion=0.19; maxnumpyversion=1.12; maxcythonversion=3.0 ;;
+    2.6)           maxversion=0.18; maxnumpyversion=1.12; maxcythonversion=3.0 ;;
     3.2)           maxversion=0.19; maxnumpyversion=1.12; maxcythonversion=0.27 ;;
     3.3)           maxversion=1.0;  maxnumpyversion=1.12; maxcythonversion=3.0 ;;
     2.7|3.4)       maxversion=1.3;  maxnumpyversion=1.17; maxcythonversion=3.0 ;;
