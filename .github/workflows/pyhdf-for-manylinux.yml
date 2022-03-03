@@ -24,7 +24,7 @@ jobs:
           ["x64", "x86"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8",
-           "3.9"]
+           "3.9", "3.10"]
       max-parallel: 5
       fail-fast: false
     runs-on: ubuntu-latest
@@ -60,7 +60,7 @@ jobs:
           ["x64", "x86"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8",
-           "3.9"]
+           "3.9", "3.10"]
       max-parallel: 5
       fail-fast: false
     needs: build
@@ -110,7 +110,7 @@ jobs:
           ["x64", "x86"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8",
-           "3.9"]
+           "3.9", "3.10"]
       max-parallel: 5
       fail-fast: false
     needs: repair
@@ -147,7 +147,7 @@ jobs:
           ["x64", "x86"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8",
-           "3.9"]
+           "3.9", "3.10"]
       max-parallel: 1
     needs: test
     runs-on: ubuntu-latest
