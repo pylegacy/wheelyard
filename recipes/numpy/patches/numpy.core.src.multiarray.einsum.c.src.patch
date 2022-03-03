@@ -1,0 +1,20 @@
+--- numpy/core/src/multiarray/einsum.c.src.orig  2022-03-03 18:17:55.364000000 +0100
++++ numpy/core/src/multiarray/einsum.c.src       2022-03-03 18:18:09.688550200 +0100
+@@ -402,7 +402,7 @@
+         }
+         /* A repeated label, find the original one and merge them. */
+         else {
+-#ifdef __GNUC__
++#if defined(__GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wuninitialized"
+ #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+@@ -419,7 +419,7 @@
+                 return NULL;
+             }
+             new_strides[i] += stride;
+-#ifdef __GNUC__
++#if defined(__GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+ #pragma GCC diagnostic pop
+ #endif
+         }
