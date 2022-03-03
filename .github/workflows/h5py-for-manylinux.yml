@@ -27,7 +27,7 @@ jobs:
       max-parallel: 5
       fail-fast: false
     runs-on: ubuntu-latest
-    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-6"
+    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-7"
     steps:
       -
         name: Checkout
@@ -63,7 +63,7 @@ jobs:
       fail-fast: false
     needs: build
     runs-on: ubuntu-latest
-    container: "pylegacy/${{ matrix.arch }}-python:3.6-debian-6"
+    container: "pylegacy/${{ matrix.arch }}-python:3.6-debian-7"
     steps:
       -
         name: Checkout
