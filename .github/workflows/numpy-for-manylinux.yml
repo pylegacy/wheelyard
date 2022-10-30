@@ -203,23 +203,22 @@ jobs:
         name: Test package
         run: |
           python -c "import numpy as np"
+      -
+        name: Upload release artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifacts-upload
+          path: wheelyard
 
   upload:
-    strategy:
-      matrix:
-        arch:
-          ["x64", "x86"]
-        python-version:
-          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
-      max-parallel: 1
     needs: test
     runs-on: ubuntu-latest
     steps:
       -
-        name: Download repair artifacts
+        name: Download release artifacts
         uses: actions/download-artifact@v1
         with:
-          name: artifacts-repair-${{ matrix.arch }}-${{ matrix.python-version }}
+          name: artifacts-upload
           path: wheelyard
       -
         name: Install SSH key
