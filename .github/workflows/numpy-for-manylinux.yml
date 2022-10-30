@@ -38,7 +38,8 @@ jobs:
         arch:
           ["x64", "x86"]
         python-version:
-          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+          ["2.6", "2.6-ucs2", "2.7", "2.7-ucs2", "3.2", "3.2-ucs2",
+           "3.3", "3.4", "3.10", "3.11"]
         debian-version:
           ["debian-5"]
         exclude:
@@ -89,7 +90,8 @@ jobs:
         arch:
           ["x64", "x86"]
         python-version:
-          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+          ["2.6", "2.6-ucs2", "2.7", "2.7-ucs2", "3.2", "3.2-ucs2",
+           "3.3", "3.4", "3.10", "3.11"]
         debian-version:
           ["debian-5"]
         exclude:
@@ -139,14 +141,14 @@ jobs:
       -
         name: Repair wheel
         run: |
-          if [ "${{ matrix.python-version }}" = "3.2" ]; then
-              kwds="--no-update-tags"
-          elif [ "${{ matrix.python-version }}" = "3.11" ]; then
-              case "${{ matrix.arch }}" in
-                  x64)  kwds="--plat=manylinux_2_17_x86_64" ;;
-                  x86)  kwds="--plat=manylinux_2_17_i686"   ;;
-              esac
-          fi
+          case "${{ matrix.python-version }}" in
+              3.2|3.2-ucs2)  kwds="--no-update-tags" ;;
+              3.11)
+                  case "${{ matrix.arch }}" in
+                      x64)  kwds="--plat=manylinux_2_17_x86_64" ;;
+                      x86)  kwds="--plat=manylinux_2_17_i686"   ;;
+                  esac
+          esac
           python -m auditwheel repair -w wheelyard ${kwds} dist/*.whl
       -
         name: Upload repair artifacts
@@ -161,7 +163,8 @@ jobs:
         arch:
           ["x64", "x86"]
         python-version:
-          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+          ["2.6", "2.6-ucs2", "2.7", "2.7-ucs2", "3.2", "3.2-ucs2",
+           "3.3", "3.4", "3.10", "3.11"]
         debian-version:
           ["debian-5"]
         exclude:
