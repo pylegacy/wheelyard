@@ -106,13 +106,13 @@ jobs:
         name: Install auditwheel
         run: |
           if [ "${{ matrix.python-version }}" = "3.11" ]; then
-              pip install patchelf;
-              pip install auditwheel;
-              policy=$(python -c 'import auditwheel.policy; print(auditwheel.policy._POLICY_JSON_MAP[1])');
-              sed -i 's/"aliases": \[.\+\]/"aliases": []/g' "${policy}";
+              pip install patchelf
+              pip install auditwheel
+              policy=$(python -c 'import auditwheel.policy; print(auditwheel.policy._POLICY_JSON_MAP[1])')
+              sed -i 's/"aliases": \[.\+\]/"aliases": []/g' "${policy}"
           else
-              pip install "patchelf < 0.14";
-              pip install "auditwheel < 4";
+              pip install "patchelf < 0.14"
+              pip install "auditwheel < 4"
           fi
       -
         name: Repair wheel
