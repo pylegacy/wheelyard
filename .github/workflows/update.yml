@@ -30,28 +30,18 @@ jobs:
           python -m pip install dumb-pypi
           mainfile="$(python -c 'from dumb_pypi import main; print(main.__file__)')"
           patch ${mainfile} << EOF
-          --- main.py.orig  2022-03-01 21:36:04.801569701 +0100
-          +++ main.py       2022-03-01 21:38:48.818186310 +0100
-          @@ -102,15 +102,10 @@
+          --- main.py.orig  2022-10-30 14:56:28.996162000 +0100
+          +++ main.py       2022-10-30 14:56:28.996162000 +0100
+          @@ -118,6 +118,9 @@
+                   """Sort key for a filename."""
                    return (
                        self.name,
           +            tuple(int(x) for x in
           +                  re.search(r"^(py|cp)([2-3])(\d+)?", self.filename.split("-")[2]).groups()[1:]
           +                  if x is not None),
                        self.parsed_version,
-          -
-          -            # This looks ridiculous, but it's so that like extensions sort
-          -            # together when the name and version are the same (otherwise it
-          -            # depends on how the filename is normalized, which means sometimes
-          -            # wheels sort before tarballs, but not always).
-          -            # Alternatively we could just grab the extension, but that's less
-          -            # amusing, even though it took 6 lines of comments to explain this.
-          -            self.filename[::-1],
-          -        )
-          +        ) + tuple(self.filename.split("-")[3:])
-           
-               @property
-               def formatted_upload_time(self) -> str:
+                       # sort wheels first
+                       not self.filename.endswith('.whl'),
           EOF
       -
         name: Install SSH key
