@@ -6,8 +6,8 @@ pkgname=Cython
 pyversion="$(python -V 2>&1 | head -n1 | cut -d' ' -f2 | cut -d'.' -f1,2)"
 case ${pyversion} in
     3.2)                            maxversion=0.27 ;;
-    2.6|2.7|3.3|3.4)                maxversion=3.0 ;;
-    3.5|3.6|3.7|3.8|3.9|3.10|3.11)  maxversion=3.1 ;;
+    2.6|2.7|3.3|3.4)                maxversion=3.0  ;;
+    3.5|3.6|3.7|3.8|3.9|3.10|3.11)  maxversion=3.1  ;;
     *)
         echo 1>&2 "E: unsupported Python version: '${pyversion}'"
         exit 1

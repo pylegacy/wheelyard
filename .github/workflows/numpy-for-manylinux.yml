@@ -143,8 +143,8 @@ jobs:
               kwds="--no-update-tags"
           elif [ "${{ matrix.python-version }}" = "3.11" ]; then
               case "${{ matrix.arch }}" in
-                  x64) kwds="--plat=manylinux_2_17_x86_64" ;;
-                  x86) kwds="--plat=manylinux_2_17_i686"   ;;
+                  x64)  kwds="--plat=manylinux_2_17_x86_64" ;;
+                  x86)  kwds="--plat=manylinux_2_17_i686"   ;;
               esac
           fi
           python -m auditwheel repair -w wheelyard ${kwds} dist/*.whl
