@@ -17,6 +17,19 @@ on:
 
 jobs:
 
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Upload checkout
+        uses: actions/upload-artifact@v1
+        with:
+          name: checkout
+          path: .
+
   build:
     strategy:
       matrix:
@@ -38,12 +51,16 @@ jobs:
             python-version: "3.11"
       max-parallel: 6
       fail-fast: false
+    needs: checkout
     runs-on: ubuntu-latest
     container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-${{ matrix.debian-version }}"
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v3
+        name: Download checkout
+        uses: actions/download-artifact@v1
+        with:
+          name: checkout
+          path: .
       -
         name: Fixup pip and wheel
         run: |
@@ -90,8 +107,11 @@ jobs:
     container: "pylegacy/${{ matrix.arch }}-python:3.6-${{ matrix.debian-version }}"
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v3
+        name: Download checkout
+        uses: actions/download-artifact@v1
+        with:
+          name: checkout
+          path: .
       -
         name: Download build artifacts
         uses: actions/download-artifact@v1
@@ -159,8 +179,11 @@ jobs:
     container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-${{ matrix.debian-version }}"
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v3
+        name: Download checkout
+        uses: actions/download-artifact@v1
+        with:
+          name: checkout
+          path: .
       -
         name: Download repair artifacts
         uses: actions/download-artifact@v1
