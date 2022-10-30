@@ -200,7 +200,7 @@ jobs:
           path: wheelyard
       -
         name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+        uses: shimataro/ssh-key-action@develop
         with:
           key: ${{ secrets.REMOTE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
@@ -217,7 +217,7 @@ jobs:
     steps:
       -
         name: Trigger wheelyard update
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           event-type: update-wheelyard
