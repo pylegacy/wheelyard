@@ -5,13 +5,14 @@ cwd=$(pwd)
 pkgname=numpy
 pyversion="$(python -V 2>&1 | head -n1 | cut -d' ' -f2 | cut -d'.' -f1,2)"
 case ${pyversion} in
-    2.6)              maxversion=1.12; maxcythonversion=3.0 ;;
-    3.2)              maxversion=1.12; maxcythonversion=0.27 ;;
-    3.3)              maxversion=1.12; maxcythonversion=3.0 ;;
-    2.7|3.4)          maxversion=1.17; maxcythonversion=3.0 ;;
-    3.5)              maxversion=1.19; maxcythonversion=3.1 ;;
-    3.6)              maxversion=1.20; maxcythonversion=3.1 ;;
-    3.7|3.8|3.9|3.10) maxversion=1.22; maxcythonversion=3.1 ;;
+    2.6)              maxversion=1.12;   maxcythonversion=3.0 ;;
+    3.2)              maxversion=1.12;   maxcythonversion=0.27 ;;
+    3.3)              maxversion=1.12;   maxcythonversion=3.0 ;;
+    2.7|3.4)          maxversion=1.17;   maxcythonversion=3.0 ;;
+    3.5)              maxversion=1.19;   maxcythonversion=3.1 ;;
+    3.6)              maxversion=1.20;   maxcythonversion=3.1 ;;
+    3.7|3.8|3.9|3.10) maxversion=1.21.5; maxcythonversion=3.1 ;;
+    3.11)             maxversion=1.23.4; maxcythonversion=3.1 ;;
     *)
         echo 1>&2 "E: unsupported Python version: '${pyversion}'"
         exit 1
