@@ -37,10 +37,10 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
-        debian-version:
-          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        debian-version:
+          ["debian-5"]
       max-parallel: 6
       fail-fast: false
     needs: checkout
@@ -78,10 +78,10 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
-        debian-version:
-          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        debian-version:
+          ["debian-5"]
       max-parallel: 6
       fail-fast: false
     needs: build
@@ -128,10 +128,10 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
-        debian-version:
-          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        debian-version:
+          ["debian-5"]
       max-parallel: 6
       fail-fast: false
     needs: repair

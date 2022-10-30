@@ -37,20 +37,20 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
-        debian-version:
-          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        debian-version:
+          ["debian-5"]
         exclude:
-          - debian-version: "debian-5"
-            python-version: "3.11"
+          - python-version: "3.11"
+            debian-version: "debian-5"
         include:
           - arch: "x64"
-            debian-version: "debian-8"
             python-version: "3.11"
+            debian-version: "debian-8"
           - arch: "x86"
-            debian-version: "debian-8"
             python-version: "3.11"
+            debian-version: "debian-8"
       max-parallel: 6
       fail-fast: false
     needs: checkout
@@ -88,20 +88,20 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
-        debian-version:
-          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        debian-version:
+          ["debian-5"]
         exclude:
-          - debian-version: "debian-5"
-            python-version: "3.11"
+          - python-version: "3.11"
+            debian-version: "debian-5"
         include:
           - arch: "x64"
-            debian-version: "debian-8"
             python-version: "3.11"
+            debian-version: "debian-8"
           - arch: "x86"
-            debian-version: "debian-8"
             python-version: "3.11"
+            debian-version: "debian-8"
       max-parallel: 6
       fail-fast: false
     needs: build
@@ -160,20 +160,20 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
-        debian-version:
-          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        debian-version:
+          ["debian-5"]
         exclude:
-          - debian-version: "debian-5"
-            python-version: "3.11"
+          - python-version: "3.11"
+            debian-version: "debian-5"
         include:
           - arch: "x64"
-            debian-version: "debian-8"
             python-version: "3.11"
+            debian-version: "debian-8"
           - arch: "x86"
-            debian-version: "debian-8"
             python-version: "3.11"
+            debian-version: "debian-8"
       max-parallel: 6
       fail-fast: false
     needs: repair
