@@ -18,10 +18,10 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Set Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.8"
       -
@@ -45,7 +45,7 @@ jobs:
           EOF
       -
         name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+        uses: shimataro/ssh-key-action@develop
         with:
           key: ${{ secrets.REMOTE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
