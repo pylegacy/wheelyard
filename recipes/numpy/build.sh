@@ -26,6 +26,10 @@ if [ "${maxversion}" = "1.12" ]; then
     fi
 fi
 
+# NumPy compilation may fail with newer setuptools:
+# https://github.com/pypa/setuptools/issues/3549
+pip install "setuptools < 64"
+
 # Needed by Python 3.2 as long as it uses pip 7.x.
 case ${pyversion} in
     2.6)  download="download" ;;
