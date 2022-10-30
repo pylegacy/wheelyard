@@ -1,0 +1,11 @@
+--- numpy/distutils/ccompiler_opt.py.orig  2022-09-09 13:36:30
++++ numpy/distutils/ccompiler_opt.py       2022-09-09 13:36:30
+@@ -19,7 +19,7 @@
+ # These flags are used to compile any C++ source within Numpy.
+ # They are chosen to have very few runtime dependencies.
+ NPY_CXX_FLAGS = [
+-    '-std=c++11',  # Minimal standard version
++    '-std=c++0x',  # Minimal standard version
+     '-D__STDC_VERSION__=0',  # for compatibility with C headers
+     '-fno-exceptions',  # no exception support
+     '-fno-rtti']  # no runtime type information
