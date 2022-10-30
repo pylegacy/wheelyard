@@ -22,12 +22,24 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
+        debian-version:
+          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        exclude:
+          - debian-version: "debian-5"
+            python-version: "3.11"
+        include:
+          - arch: "x64"
+            debian-version: "debian-8"
+            python-version: "3.11"
+          - arch: "x86"
+            debian-version: "debian-8"
+            python-version: "3.11"
       max-parallel: 6
       fail-fast: false
     runs-on: ubuntu-latest
-    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-5"
+    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-${{ matrix.debian-version }}"
     steps:
       -
         name: Checkout
@@ -57,13 +69,25 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
+        debian-version:
+          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        exclude:
+          - debian-version: "debian-5"
+            python-version: "3.11"
+        include:
+          - arch: "x64"
+            debian-version: "debian-8"
+            python-version: "3.11"
+          - arch: "x86"
+            debian-version: "debian-8"
+            python-version: "3.11"
       max-parallel: 6
       fail-fast: false
     needs: build
     runs-on: ubuntu-latest
-    container: "pylegacy/${{ matrix.arch }}-python:3.6-debian-5"
+    container: "pylegacy/${{ matrix.arch }}-python:3.6-${{ matrix.debian-version }}"
     steps:
       -
         name: Checkout
@@ -82,16 +106,24 @@ jobs:
         name: Install patchelf
         run: |
           pip install patchelf
-          alias patchelf="python -m patchelf"
       -
         name: Install auditwheel
         run: |
-          pip install "auditwheel < 4.0"
+          pip install auditwheel
+          if [ "${{ matrix.python-version }}" = "3.11" ]; then
+              policy=$(python -c 'import auditwheel.policy; print(auditwheel.policy._POLICY_JSON_MAP[1])');
+              sed -i 's/"aliases": \[.\+\]/"aliases": []/g' "${policy}";
+          fi
       -
         name: Repair wheel
         run: |
           if [ "${{ matrix.python-version }}" = "3.2" ]; then
               kwds="--no-update-tags"
+          elif [ "${{ matrix.python-version }}" = "3.11" ]; then
+              case "${{ matrix.arch }}" in
+                  x64) kwds="--plat=manylinux_2_17_x86_64" ;;
+                  x86) kwds="--plat=manylinux_2_17_i686"   ;;
+              esac
           fi
           python -m auditwheel repair -w wheelyard ${kwds} dist/*.whl
       -
@@ -106,13 +138,25 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
+        debian-version:
+          ["debian-5"]
         python-version:
           ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+        exclude:
+          - debian-version: "debian-5"
+            python-version: "3.11"
+        include:
+          - arch: "x64"
+            debian-version: "debian-8"
+            python-version: "3.11"
+          - arch: "x86"
+            debian-version: "debian-8"
+            python-version: "3.11"
       max-parallel: 6
       fail-fast: false
     needs: repair
     runs-on: ubuntu-latest
-    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-5"
+    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-${{ matrix.debian-version }}"
     steps:
       -
         name: Checkout
