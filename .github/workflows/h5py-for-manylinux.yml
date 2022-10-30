@@ -2,6 +2,8 @@ name: h5py-for-manylinux
 
 env:
   PKGNAME: "h5py"
+  PYTHONWARNINGS: "ignore:DEPRECATION"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
   PIP_PREFER_BINARY: "1"
 
 on:
