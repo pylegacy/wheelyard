@@ -134,7 +134,7 @@ jobs:
               sed -i 's/"aliases": \[.\+\]/"aliases": []/g' "${policy}"
           else
               pip install "patchelf < 0.14"
-              pip install "auditwheel < 4"
+              pip install "auditwheel < 4.0"
           fi
       -
         name: Repair wheel
