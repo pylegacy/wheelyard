@@ -19,22 +19,40 @@ on:
 
 jobs:
 
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Upload checkout
+        uses: actions/upload-artifact@v1
+        with:
+          name: checkout
+          path: .
+
   build:
     strategy:
       matrix:
         arch:
           ["x64", "x86"]
+        debian-version:
+          ["debian-5"]
         python-version:
-          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8",
-           "3.9", "3.10"]
-      max-parallel: 5
+          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+      max-parallel: 6
       fail-fast: false
+    needs: checkout
     runs-on: ubuntu-latest
-    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-5"
+    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-${{ matrix.debian-version }}"
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v1
+        name: Download checkout
+        uses: actions/download-artifact@v1
+        with:
+          name: checkout
+          path: .
       -
         name: Fixup pip and wheel
         run: |
@@ -60,18 +78,22 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
+        debian-version:
+          ["debian-5"]
         python-version:
-          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8",
-           "3.9", "3.10"]
-      max-parallel: 5
+          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+      max-parallel: 6
       fail-fast: false
     needs: build
     runs-on: ubuntu-latest
-    container: "pylegacy/${{ matrix.arch }}-python:3.6-debian-5"
+    container: "pylegacy/${{ matrix.arch }}-python:3.6-${{ matrix.debian-version }}"
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v1
+        name: Download checkout
+        uses: actions/download-artifact@v1
+        with:
+          name: checkout
+          path: .
       -
         name: Download build artifacts
         uses: actions/download-artifact@v1
@@ -83,14 +105,10 @@ jobs:
         run: |
           sh recipes/${{ env.PKGNAME }}/prebuild.sh
       -
-        name: Install patchelf
-        run: |
-          pip install patchelf
-          alias patchelf="python -m patchelf"
-      -
         name: Install auditwheel
         run: |
-          pip install "auditwheel < 4.0"
+          pip install "patchelf < 0.14"
+          pip install "auditwheel < 4"
       -
         name: Repair wheel
         run: |
@@ -110,18 +128,22 @@ jobs:
       matrix:
         arch:
           ["x64", "x86"]
+        debian-version:
+          ["debian-5"]
         python-version:
-          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8",
-           "3.9", "3.10"]
-      max-parallel: 5
+          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.10", "3.11"]
+      max-parallel: 6
       fail-fast: false
     needs: repair
     runs-on: ubuntu-latest
-    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-debian-5"
+    container: "pylegacy/${{ matrix.arch }}-python:${{ matrix.python-version }}-${{ matrix.debian-version }}"
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v1
+        name: Download checkout
+        uses: actions/download-artifact@v1
+        with:
+          name: checkout
+          path: .
       -
         name: Download repair artifacts
         uses: actions/download-artifact@v1
@@ -141,28 +163,26 @@ jobs:
         name: Test package
         run: |
           python -c "import Cython"
+      -
+        name: Upload release artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifacts-upload
+          path: wheelyard
 
   upload:
-    strategy:
-      matrix:
-        arch:
-          ["x64", "x86"]
-        python-version:
-          ["2.6", "2.7", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8",
-           "3.9", "3.10"]
-      max-parallel: 1
     needs: test
     runs-on: ubuntu-latest
     steps:
       -
-        name: Download repair artifacts
+        name: Download release artifacts
         uses: actions/download-artifact@v1
         with:
-          name: artifacts-repair-${{ matrix.arch }}-${{ matrix.python-version }}
+          name: artifacts-upload
           path: wheelyard
       -
         name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+        uses: shimataro/ssh-key-action@develop
         with:
           key: ${{ secrets.REMOTE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
@@ -179,7 +199,7 @@ jobs:
     steps:
       -
         name: Trigger wheelyard update
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           event-type: update-wheelyard
