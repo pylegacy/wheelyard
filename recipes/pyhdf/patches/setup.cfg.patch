@@ -22,7 +22,7 @@
 +    numpy >= 1.15, < 1.17; python_version == "3.4"
 +    numpy >= 1.16, < 1.19; python_version == "3.5"
 +    numpy >= 1.16, < 1.20; python_version == "3.6"
-+    numpy >= 1.21, < 1.23; python_version >= "3.7"
++    numpy >= 1.21, < 1.25; python_version >= "3.7"
  setup_requires = numpy
  
  [egg_info]
