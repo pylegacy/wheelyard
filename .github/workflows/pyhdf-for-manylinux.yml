@@ -203,7 +203,7 @@ jobs:
       -
         name: Install package
         run: |
-          pip install wheelyard/*.whl
+          pip install --prefer-binary wheelyard/*.whl
       -
         name: Test package
         run: |
