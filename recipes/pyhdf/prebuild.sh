@@ -3,7 +3,7 @@
 apt-get update
 
 # Install library dependencies.
-pkghdf4="$(apt-cache search libhdf4 | grep dev | cut -d' ' -f1)"
+pkghdf4="$(apt-cache search libhdf4 | grep dev | grep -v alt | cut -d' ' -f1)"
 apt-get install -y ${pkghdf4}
 
 # Install build dependencies.
