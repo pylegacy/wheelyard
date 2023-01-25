@@ -203,7 +203,11 @@ jobs:
       -
         name: Install package
         run: |
-          pip install --prefer-binary wheelyard/*.whl
+          case "${{ matrix.python-version }}" in
+              2.6|2.6-ucs2|2.7|2.7-ucs2|3.2|3.2-ucs2|3.3)  kwds="" ;;
+              *)                                           kwds="--prefer-binary" ;;
+          esac
+          pip install ${kwds} wheelyard/*.whl
       -
         name: Test package
         run: |
