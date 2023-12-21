@@ -56,10 +56,10 @@ jobs:
             debian-version: "debian-8"
           - arch: "x64"
             python-version: "3.12"
-            debian-version: "debian-8"
+            debian-version: "debian-10"
           - arch: "x86"
             python-version: "3.12"
-            debian-version: "debian-8"
+            debian-version: "debian-10"
       max-parallel: 6
       fail-fast: false
     needs: checkout
@@ -116,10 +116,10 @@ jobs:
             debian-version: "debian-8"
           - arch: "x64"
             python-version: "3.12"
-            debian-version: "debian-8"
+            debian-version: "debian-10"
           - arch: "x86"
             python-version: "3.12"
-            debian-version: "debian-8"
+            debian-version: "debian-10"
       max-parallel: 6
       fail-fast: false
     needs: build
@@ -158,11 +158,19 @@ jobs:
         name: Repair wheel
         run: |
           case "${{ matrix.python-version }}" in
-              3.2|3.2-ucs2)  kwds="--no-update-tags" ;;
-              3.11|3.12)
+              3.2|3.2-ucs2)
+                  kwds="--no-update-tags"
+              ;;
+              3.11)
                   case "${{ matrix.arch }}" in
                       x64)  kwds="--plat=manylinux_2_17_x86_64" ;;
                       x86)  kwds="--plat=manylinux_2_17_i686"   ;;
+                  esac
+              ;;
+              3.12)
+                  case "${{ matrix.arch }}" in
+                      x64)  kwds="--plat=manylinux_2_28_x86_64" ;;
+                      x86)  kwds="--plat=manylinux_2_28_i686"   ;;
                   esac
           esac
           python -m auditwheel repair -w wheelyard ${kwds} dist/*.whl
@@ -197,10 +205,10 @@ jobs:
             debian-version: "debian-8"
           - arch: "x64"
             python-version: "3.12"
-            debian-version: "debian-8"
+            debian-version: "debian-10"
           - arch: "x86"
             python-version: "3.12"
-            debian-version: "debian-8"
+            debian-version: "debian-10"
       max-parallel: 6
       fail-fast: false
     needs: repair

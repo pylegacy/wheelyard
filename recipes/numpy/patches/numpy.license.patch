@@ -1,0 +1,11 @@
+--- pyproject.toml.orig  1970-01-01 00:00:00
++++ pyproject.toml       2023-12-21 12:23:17
+@@ -19,7 +19,7 @@
+ name = "numpy"
+ version = "1.26.0"
+ # TODO: add `license-files` once PEP 639 is accepted (see meson-python#88)
+-license = {file = "LICENSE.txt"}
++license = {file = "LICENSE"}
+ 
+ description = "Fundamental package for array computing in Python"
+ authors = [{name = "Travis E. Oliphant et al."}]

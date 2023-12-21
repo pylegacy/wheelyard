@@ -13,7 +13,7 @@ case ${pyversion} in
     3.6)               maxversion=1.20;   maxcythonversion=3.1  ;;
     3.7|3.8|3.9|3.10)  maxversion=1.21.5; maxcythonversion=3.1  ;;
     3.11)              maxversion=1.23.4; maxcythonversion=3.1  ;;
-    3.12)              maxversion=1.26.1; maxcythonversion=3.1  ;;
+    3.12)              maxversion=1.26.2; maxcythonversion=3.1  ;;
     *)
         echo 1>&2 "E: unsupported Python version: '${pyversion}'"
         exit 1
@@ -26,10 +26,6 @@ if [ "${maxversion}" = "1.12" ]; then
         ln -s /usr/include/locale.h /usr/include/xlocale.h
     fi
 fi
-
-# NumPy compilation may fail with newer setuptools:
-# https://github.com/pypa/setuptools/issues/3549
-pip install "setuptools < 64"
 
 # Needed by Python 3.2 as long as it uses pip 7.x.
 case ${pyversion} in
@@ -49,9 +45,17 @@ cd ${tmpdir}
 
 pip install "cython < ${maxcythonversion}"
 case ${pyversion} in
-    3.12)  pip install "packaging < 24" "pyproject-metadata < 0.8" "ninja < 1.12" ;;
+    3.12)
+        pip install "packaging < 24" "pyproject-metadata < 0.8" "ninja < 1.12";
+        wget https://files.pythonhosted.org/packages/78/23/f78fd8311e0f710fe1d065d50b92ce0057fe877b8ed7fd41b28ad6865bfc/numpy-1.26.1.tar.gz
+    ;;
+    *)
+        # NumPy compilation may fail with newer setuptools:
+        # https://github.com/pypa/setuptools/issues/3549
+        pip install "setuptools < 64"
+        pip ${download} --no-deps --no-binary="${pkgname}" "${pkgname} < ${maxversion}"
+    ;;
 esac
-pip ${download} --no-deps --no-binary="${pkgname}" "${pkgname} < ${maxversion}"
 
 sdistpkg=$(ls)
 if [ ! -z $(echo "${sdistpkg}" | grep -e .zip$ || true) ]; then
