@@ -9,3 +9,7 @@ apt-get install -y ${pkgblas} libblas-dev ${pkglapack} liblapack-dev
 
 # Install build dependencies.
 apt-get install -y gcc g++ gfortran libc6-dev unzip
+
+# Install extra build dependencies.
+# - NumPy 1.26.1+ need `pkg-config` to identify system BLAS/LAPACK.
+apt-get install -y pkg-config
