@@ -13,6 +13,7 @@ case ${pyversion} in
     3.6)               maxversion=1.20;   maxcythonversion=3.1  ;;
     3.7|3.8|3.9|3.10)  maxversion=1.21.5; maxcythonversion=3.1  ;;
     3.11)              maxversion=1.23.4; maxcythonversion=3.1  ;;
+    3.12)              maxversion=1.26.1; maxcythonversion=3.1  ;;
     *)
         echo 1>&2 "E: unsupported Python version: '${pyversion}'"
         exit 1
@@ -47,6 +48,9 @@ mkdir -p ${tmpdir}
 cd ${tmpdir}
 
 pip install "cython < ${maxcythonversion}"
+case ${pyversion} in
+    3.12)  pip install "packaging < 24" "pyproject-metadata < 0.8" "ninja < 1.12" ;;
+esac
 pip ${download} --no-deps --no-binary="${pkgname}" "${pkgname} < ${maxversion}"
 
 sdistpkg=$(ls)
